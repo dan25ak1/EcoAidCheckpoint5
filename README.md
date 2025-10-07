@@ -2,24 +2,27 @@
 
 ## 📋 Pré-requisitos
 
-Antes de iniciar o deploy, certifique-se de que possui:
+Antes de iniciar, certifique-se de ter:
 
-* **Azure CLI** instalado: [https://aka.ms/installazurecliwindows](https://aka.ms/installazurecliwindows)
-* **Conta GitHub** com acesso ao repositório
-* **Conta Azure ativa** (Azure for Students é suficiente)
-* **Arquivo `deploy.cmd`** salvo na raiz do projeto
+- ✅ [**Azure CLI** instalado](https://aka.ms/installazurecliwindows)  
+- ✅ Conta **GitHub** com acesso ao repositório  
+- ✅ Conta **Azure ativa** (Azure for Students é suficiente)  
+- ✅ Arquivo `deploy.cmd` (ou `deploy.sh`) salvo na **raiz do projeto**o
 
 ---
 
-## 🧩 Passo 1: Preparar o ambiente
+## 🧩 **Passo 1 — Preparar o ambiente**
 
-1. Abra o **Prompt de Comando (CMD)** ou **PowerShell**
-2. Clone o repositório localmente (opcional):
+1. Abra o **Prompt de Comando (CMD)** ou **PowerShell**  
+2. Crie um **fork** deste projeto no GitHub  
+3. (Opcional) Clone o repositório forkado localmente:
 
 ```bash
-git clone https://github.com/dan25ak1/EcoAidCheckpoint5.git
+git clone https://github.com/<seu-usuario>/EcoAidCheckpoint5.git
 cd EcoAidCheckpoint5
 ```
+
+> ⚠️ Substitua `<seu-usuario>` pelo seu nome de usuário no GitHub.
 
 ---
 
@@ -38,74 +41,103 @@ No início do arquivo `deploy.cmd` ou `deploy.sh`, edite as seguintes variáveis
 
 ---
 
-## 🚀 Passo 3: Executar o script
+## 🧰 **Passo 3 — Executar o script de Deploy**
 
-1. **Entre na pasta** `scripts`:
+1. Acesse a pasta `scripts`:
 
 ```cmd
 cd scripts
 ```
 
-2. **Execute o script** [deploy.cmd](scripts/deploy.cmd) ou [deploy.sh](scripts/deploy.sh):
+2. Execute o script conforme seu sistema operacional:
 
+**Windows:**
 ```cmd
 deploy.cmd
 ```
 
----
-
-```cmd
+**Linux / macOS:**
+```bash
 chmod +x deploy.sh
-```
-```cmd
-./deploy.sh 
+./deploy.sh
 ```
 
-O script fará automaticamente:
+O script irá executar automaticamente:
 
-* Login no Azure;
-* Criação de grupo de recursos;
-* Criação de SQL Server e banco de dados;
-* Configuração do firewall;
-* Criação do App Service e Application Insights;
-* Configuração do GitHub Actions para deploy contínuo.
+- 🔐 Login no Azure  
+- 🏗️ Criação do grupo de recursos  
+- 🗃️ Criação do SQL Server e banco de dados  
+- 🌐 Configuração de firewall  
+- ☁️ Criação do App Service e Application Insights  
+- 🤖 Configuração do GitHub Actions para deploy contínuo
 
 ---
 
-## 🔐 Passo 4: Autenticação
+## 🔐 **Passo 4 — Autenticação**
 
-Durante a execução, você será solicitado a:
+Durante a execução do script, você precisará:
 
-* **Fazer login na Azure** (abrirá uma janela do navegador)
-* **Autorizar o GitHub** (será exibido um código para inserir em [https://github.com/login/device](https://github.com/login/device))
+- **Fazer login na Azure** (uma janela do navegador será aberta)  
+- **Autorizar o GitHub** para permitir o deploy contínuo:
+  - Um código será exibido no terminal
+  - Acesse [https://github.com/login/device](https://github.com/login/device) e insira o código fornecido
 
 ---
 
-## 🧾 Passo 5: Verificar o deploy
+## ⚡ **Passo 5 — Configurar Credenciais no GitHub**
+
+1. Vá até `.github/workflows/` e abra o arquivo YAML que o Azure gerou.  
+2. Logo abaixo do passo de **build**, adicione as variáveis de ambiente:
+
+```yaml
+- name: Build with Maven
+  run: mvn clean install
+  env:
+    MSSQL_HOST: ${{ secrets.AZURE_SQL_HOST }}
+    MSSQL_PORT: ${{ secrets.AZURE_SQL_PORT }}
+    MSSQL_DATABASE: ${{ secrets.AZURE_SQL_DATABASE }}
+    MSSQL_USER: ${{ secrets.AZURE_SQL_USERNAME }}
+    MSSQL_PASSWORD: ${{ secrets.AZURE_SQL_PASSWORD }}
+```
+
+3. No repositório do GitHub, acesse:  
+   **Settings** → **Secrets and variables** → **Actions** → **New repository secret**  
+   E crie os seguintes segredos:
+
+| Nome                  | Valor (exemplo — personalize com os seus dados)                                                 |
+| --------------------- | ------------------------------------------------------------------------------------------------ |
+| `AZURE_SQL_DATABASE`  | `db-cp5`                                                                                         |
+| `AZURE_SQL_PORT`      | `1433`                                                                                           |
+| `AZURE_SQL_PASSWORD`  | `Fiap@2tdsvms` *(exemplo)*                                                                       |
+| `AZURE_SQL_HOST`      | `sql-server-cp5-rm558263-eastus2.database.windows.net` *(alterar para o seu host)*              |
+| `AZURE_SQL_USERNAME`  | `user-fiaper`                                                                                   |
+
+---
+
+## 🧾 **Passo 6 — Verificar o Deploy**
 
 Após a execução bem-sucedida:
 
-* Acesse a aplicação:
+1. Acesse sua aplicação em:  
+   ```
+   https://<seu-webapp-name>.azurewebsites.net
+   ```
 
-  ```
-  https://<seu-webapp-name>.azurewebsites.net
-  ```
+2. Monitore os logs em tempo real:
+   ```cmd
+   az webapp log tail --name <WEBAPP_NAME> --resource-group <RESOURCE_GROUP_NAME>
+   ```
 
-* Monitore os logs em tempo real:
-
-  ```cmd
-  az webapp log tail --name <WEBAPP_NAME> --resource-group <RESOURCE_GROUP_NAME>
-  ```
-
-* Acompanhe o workflow de deploy no GitHub Actions:
-
-  ```
-  https://github.com/<seu-usuario>/<seu-repo>/actions
-  ```
+3. Acompanhe os workflows no GitHub Actions:  
+   ```
+   https://github.com/<seu-usuario>/<seu-repo>/actions
+   ```
 
 ---
 
-## 👤 Passo 6: Criar um usuário para acessar a API
+## 👤 **Passo 7 — Criar um Usuário na API**
+
+Após o deploy, cadastre um usuário para acessar a API:
 
 ```bash
 curl -X POST https://<seu-webapp-name>.azurewebsites.net/usuarios/cadastrar \
@@ -114,7 +146,7 @@ curl -X POST https://<seu-webapp-name>.azurewebsites.net/usuarios/cadastrar \
     "nome": "João Silva",
     "usuario": "joao@email.com",
     "senha": "Senha@123",
-    "foto": null
+    "foto": "foto123"
   }'
 ```
 
