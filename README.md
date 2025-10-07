@@ -1,5 +1,9 @@
 # HOW TO - Guia de Deploy Passo a Passo
 
+Daniel Saburo Akiyama RM 558263
+Danilo Correia e Silva RM 557540
+João Pedro Rodrigues da Costa RM 558199
+
 ## 📋 Pré-requisitos
 
 Antes de iniciar, certifique-se de ter:
