@@ -165,7 +165,7 @@ Abaixo estão exemplos baseados nas tabelas `tb_usuario`, `tb_categoria` e `tb_p
   "nome": "João Silva",
   "usuario": "joao@email.com",
   "senha": "Senha@123",
-  "foto": null
+  "foto": "fototeste123"
 }
 ```
 
@@ -177,7 +177,7 @@ Abaixo estão exemplos baseados nas tabelas `tb_usuario`, `tb_categoria` e `tb_p
     "id": 1,
     "nome": "João Silva",
     "usuario": "joao@email.com",
-    "foto": null
+    "foto": "fototeste123"
   }
 ]
 ```
